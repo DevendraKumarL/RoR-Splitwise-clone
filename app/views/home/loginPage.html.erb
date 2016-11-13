@@ -1,0 +1,22 @@
+<% if !flash['error'].nil? %>
+<div class="container">
+	<div class="alert alert-danger">
+		<b><%= flash[:error] %></b>
+	</div>
+</div>
+<br />
+<% end %>
+<div class="container-fluid">
+	<div class="container col-lg-4 col-lg-offset-4 card">
+		<center><h1><%= @title %> </h1></center>
+		<form method="post" action="<%= loginUser_path %>" id="login-form">
+			<div class="form-group">
+				<input type="email" name="email" placeholder="Email" id="email" class="form-control" required />
+			</div>
+			<div class="form-group">
+				<input type="password" name="password" placeholder="Password" id="password" class="form-control" required />
+			</div>
+			<button type="submit" class="btn btn-primary btn-block">Log In</button>
+		</form>
+	</div>
+</div>

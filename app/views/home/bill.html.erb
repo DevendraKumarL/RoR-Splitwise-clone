@@ -1,0 +1,87 @@
+<% if flash[:error] %>
+<div class="container">
+	<div class="alert alert-success">
+		<b><%= flash[:error] %></b>
+	</div>
+</div>
+<br />
+<% end %>
+
+<div class="container">
+	<div class="col-lg-2 list-group">
+		<ul class="nav nav-pills nav-stacked">
+		  <a href="<%= dashboard_path %>" class="list-group-item"><span class="glyphicon glyphicon-chevron-right"></span> Dashboard</a>
+		  <a href="<%= activities_path %>" class="list-group-item"><span class="glyphicon glyphicon-chevron-right"></span> Recent activity</a>
+		  <hr size="1">
+		  <a class="list-group-item"><span class="glyphicon glyphicon-chevron-right"></span> All expenses</a>
+		  <li class="list-group-item highlight"><span class="glyphicon glyphicon-tags">&nbsp;</span> GROUPS</li>
+		  <% @user_groups.each do |group| %>
+		  	<a href="<%= group_path(group.id) %>" class="list-group-item groupnames <% if @group.id == group.id %> highlight-group  <% end %>">&nbsp; &nbsp; &nbsp;<span class="glyphicon glyphicon-tag"></span><%= group.name %></a>
+		  <% end %>
+		</ul>
+	</div>
+	<div class="col-lg-7 dashboard-main">
+		<div class="row dashboard-main-row1">
+			<h1><%= @title %> - <%= @group.name %></h1>
+			<button class="btn btn-default"> Settle Up</button>
+		</div>
+		<hr size="2">
+		<div class="row">
+			<span class="bill-descrption-text">Bill Description</span>
+			<p class="billpage-descrption"><%= @bill.descrption %></p>
+			<hr size="2">
+			<span class="bill-descrption-text">Bill Amount</span>
+			<span class="bill-total_amount">$<%= @bill.total_amount %></span>
+			<span class="bill-descrption-text">Split Method</span>
+			<span class="bill-split-method"><%= @bill.split_method %></span>
+		</div>
+		<hr size="2">
+		<div class="row dashboard-main-row2">
+			<div class="col-lg-4">
+				<center>
+				<b>total bill amount</b><br /><br />	
+				<span class="total-spent">$ <%= @bill.total_amount %></span>
+				</center>
+			</div>
+			<div class="col-lg-4">
+				<center>
+				<b>total bill debts</b><br /><br />
+				<span class="total-owes">$ <%= @total_bill_debt %></span>
+				</center>
+			</div>
+			<div class="col-lg-4">
+				<center>
+				<b>number of members</b><br /><br />
+				<span class="total-owed"><%= @bill_members_debts.size %></span>
+				</center>
+			</div>
+		</div>
+		<hr size="2">
+		<div class="row" style="padding: 8px">
+			<p style="padding: 8px; font-size:25px;">Bill Debts</p>
+			<div class="list-group">
+				<% @bill_members_debts.each do |name, debt| %>
+					<a class="list-group-item">
+						<div class="bill-member">
+							<%= name %>
+						</div>
+						<p class="bill-member-debt">
+							$<%= debt %>
+						</p>
+					</a>
+				<% end %>
+				<a class="list-group-item">
+					<div class="bill-member">
+						<b><%= @user.username %> (you) </b>
+					</div>
+					<p class="bill-member-user-paid">
+						$<%= @user_paid %>
+					</p>
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-2 list-group">
+		
+	</div>
+</div>

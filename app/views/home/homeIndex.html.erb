@@ -1,0 +1,28 @@
+<% if flash[:notice] %>
+<div class="container">
+	<div class="alert alert-success">
+		<b><%= flash[:notice] %></b>
+	</div>
+</div>
+<br />
+<% end %>
+
+<div class="container">
+	<center>
+		<div class="row">
+			<h1 class="title">Split expenses with friends.</h1>
+			<h3>
+				<b>Share</b> bills. <b>Make sure</b> everyone gets paid back.
+				<b>Totally free</b> for web and Android(<b>coming soon</b>).
+			</h3>
+		</div>
+		<div class="row">
+			<img src="/images/dashboard1.png" class="img-responsive home-img" alt="dashboard" />		
+		</div>
+		<center>
+			<div class="row">
+				<a href="<%= signupPage_path %>" class="btn btn-primary btn-block home-button">Get Started</a>
+			</div>
+		</center>
+	</center>
+</div>

@@ -1,0 +1,49 @@
+<% if flash[:error_group] %>
+<div class="container">
+	<div class="alert alert-success">
+		<b><%= flash[:error_group] %></b>
+	</div>
+</div>
+<br />
+<% end %>
+
+<div class="container">
+	<div class="col-lg-2 list-group">
+		<ul class="nav nav-pills nav-stacked">
+		  <a href="<%= dashboard_path %>" class="list-group-item"><span class="glyphicon glyphicon-chevron-right"></span> Dashboard</a>
+		  <a href="<%= activities_path %>" class="list-group-item highlight-group"><span class="glyphicon glyphicon-chevron-right"></span> Recent activity</a>
+		  <hr size="1">
+		  <a  href="#" class="list-group-item"><span class="glyphicon glyphicon-chevron-right"></span> All expenses</a>
+		  <li class="list-group-item highlight"><span class="glyphicon glyphicon-tags">&nbsp; &nbsp;</span> Groups</li>
+		  <% @user_groups.each do |group| %>
+		  	<a href="<%= group_path(group.id) %>" class="list-group-item groupnames">&nbsp; &nbsp; &nbsp;<span class="glyphicon glyphicon-tag"></span><%= group.name %></a>
+		  <% end %>
+		</ul>
+	</div>
+	<div class="col-lg-7 dashboard-main">
+		<div class="row dashboard-main-row1">
+			<h1><%= @title %></h1>
+		</div>
+		<hr size="2">
+		<div class="row dashboard-main-row2">
+			<table class="table-bordered table-striped table">
+				<tbody>
+				<% @user_activities.each do |activity| %>
+					<tr>
+						<td>
+							<%= activity.activity_details %><br />
+							<span style="color: #e91e63;">&nbsp;&nbsp;&nbsp;&nbsp;
+								<%= activity.created_at.to_s.split(" ")[0] %>
+							</span>
+							<span style="color: #03a9f4;">&nbsp;&nbsp;
+								<%= activity.created_at.to_s.split(" ")[1] %>
+							</span>
+						</td>
+					</tr>
+				<% end %>
+				</tbody>
+			</table>
+		</div>
+		<hr size="2">
+	</div>
+</div>

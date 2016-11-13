@@ -1,0 +1,235 @@
+<% if flash[:error] %>
+<div class="container">
+	<div class="alert alert-success">
+		<b><%= flash[:error] %></b>
+	</div>
+</div>
+<br />
+<% end %>
+
+<div class="container">
+	<div class="col-lg-2 list-group">
+		<ul class="nav nav-pills nav-stacked">
+		  <a href="<%= dashboard_path %>" class="list-group-item"><span class="glyphicon glyphicon-chevron-right"></span> Dashboard</a>
+		  <a href="<%= activities_path %>" class="list-group-item"><span class="glyphicon glyphicon-chevron-right"></span> Recent activity</a>
+		  <hr size="1">
+		  <a class="list-group-item"><span class="glyphicon glyphicon-chevron-right"></span> All expenses</a>
+		  <li class="list-group-item highlight"><span class="glyphicon glyphicon-tags">&nbsp;</span> GROUPS</li>
+		  <% @user_groups.each do |group| %>
+		  	<a href="<%= group_path(group.id) %>" class="list-group-item groupnames <% if @group.id == group.id %> highlight-group  <% end %>">&nbsp; &nbsp; &nbsp;<span class="glyphicon glyphicon-tag"></span><%= group.name %></a>
+		  <% end %>
+		</ul>
+	</div>
+	<div class="col-lg-7 dashboard-main">
+		<div class="row dashboard-main-row1">
+			<h1><%= @title %></h1>
+			<p class="billpage-descrption"><%= @group.description %></p>
+			<hr size="2">
+			<button class="btn btn-primary" type="button" data-toggle="modal" data-target="#newGroupBillModal">Add Bill</button>
+			<button class="btn btn-default"> Settle Up</button>
+		</div>
+		<hr size="2">
+		<div class="row dashboard-main-row2">
+			<div class="row">
+				<div class="col-lg-4">
+					<center>
+					<b>total spent in group</b><br /><br />
+					<span class="total-spent">$<%= @total_spent_in_this_group  %></span>
+					</center>
+				</div>
+				<div class="col-lg-4">
+					<center>
+					<b>you spent in this group</b><br /><br />
+					<span class="total-owes">$<%= @total_user_spent_in_this_group %></span>
+					</center>
+				</div>
+				<div class="col-lg-4">
+					<center>
+					<b>group owes you</b><br /><br />
+					<span class="total-owed"><%= @total_use_owes_from_this_group %></span>
+					</center>
+				</div>
+			</div>
+		</div>
+		<hr size="2">
+		<div class="row" style="padding: 8px;">
+			<p style="padding: 8px; font-size:25px;">Group Bills</p>
+			<div class="list-group">
+				<% @group_bills.each do |bill| %>
+					<a href="<%= bill_path(@group.id, bill.id) %>"
+					class="list-group-item">
+						<div class="bill-title">
+							<%= bill.name %>
+						</div>
+						<p class="bill-descrption">
+							<%= bill.descrption %>
+						</p>
+						<div class="bill-amount">
+							$ <%= bill.total_amount %>
+						</div>
+					</a>
+				<% end %>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-2 list-group">
+		<ul class="nav nav-pills nav-stacked">
+			<li class="list-group-item highlight">GROUP MEMBERS</li>
+			<hr size="1">
+			<% @group_members_debts.each do |name, amt| %>
+				<a href="#" class="list-group-item"><span class="glyphicon glyphicon-user"></span>
+					<span class="friend-name"><%= name %></span><br />
+					<span class="friend-amount">$ <%= amt %></span>
+				</a>
+			<% end %>
+			<a href="#" class="list-group-item">
+				<p>
+					<span class="glyphicon glyphicon-user"></span>
+					<%= @user.username %><b>(you)</b>
+				</p>
+			</a>
+		</ul>
+	</div>
+</div>
+
+<!-- New Group Modal -->
+<div id="newGroupBillModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Bill with
+        	<b>you</b> and all of <span class="well-custom"><%= @group.name %></span></h4>
+      </div>
+      <div class="modal-body">
+      	<form method="post" action="<%= createGroupBill_path %>">
+      		<div class="form-group">
+      			<input type="text" name="bill_name" class="form-control" placeholder="Bill Name" required />
+      		</div>
+      		<div class="form-group">
+      			<textarea rows="3" class="form-control" name="bill_description" placeholder="Bill Description ...." required></textarea>
+      		</div>
+      		<div class="form-group form-inline">
+      			<label class="dollar">Total Amount</label><br />
+      			<label class="dollar">$</label>
+      			<input type="number" name="total_amount" placeholder="0.00" id="total_amount" class="form-control" required />
+      		</div>
+      		<div class="form-group">
+	      		<label class="dollar">Split Method</label><br />
+      			<select class="form-control" name="split_method" id="split_method" onclick="splitCalculation(<%= @group.unregist_users.size %> + 1)">
+      				<option value="Split Equally">Split Equally</option>
+      				<option value="Split By Shares">Split By Shares</option>
+      				<option value="Split By %">Split By %</option>
+      			</select>
+      		</div>
+      		<center>
+	      		<div class="row" id="split-section-1">
+			      	($&nbsp;<span id="split-calculation">0.0</span>/person)
+	      		</div>
+	      	</center>
+      		<div class="row form-inline" id="split-section-2" style="display: none;">
+	      		<div class="list-group">
+	      			<% variable = 1 %>
+	      			<% @group.unregist_users.each do |u| %>
+	      				<a class="list-group-item">
+		      				<div class="row">
+		      					<div class="col-lg-4 col-lg-offset-1">
+			      					<span><%= u.name %></span>
+			      					($&nbsp;<span id="individual-amt-<%= variable %>"></span>)
+		      					</div>
+		      					<div class="col-lg-3" >
+		      						<input type="number" min="0" name="split-share[]" value="1" class="form-control"
+		      						onchange="splitByShareCalc(<%= @group.unregist_users.size %> + 1)" 
+		      						id="split-share-<%= variable %>" />
+		      						<label>share(s)</label>
+		      					</div>
+		      				</div>
+		      				<input type="hidden" name="unregist_user_id_share[]" value="<%= u.id %>">
+	      				</a>
+	      				<% variable = variable + 1 %>
+	      			<% end %>
+	      			<a class="list-group-item">
+		      			<div class="row">
+		      				<div class="col-lg-4 col-lg-offset-1">
+			      					<span>
+			      					<%= @user.username %></span>
+			      					($&nbsp;<span id="individual-amt-<%= variable %>">0.0
+			      					</span>)
+		      				</div>
+		      				<div class="col-lg-3">
+		      					<input type="number" min="0" name="split-share[]" value="1" class="form-control" id="split-share-<%= variable %>"
+		      					onchange="splitByShareCalc(<%= @group.unregist_users.size %> + 1)" 
+		      					id="split-share-<%= variable %>" />
+		      					<label>share(s)</label>
+		      				</div>
+		      			</div>
+		      			<input type="hidden" name="regist_user_id_share" value="<%= @user.id %>">
+	      			</a>
+      			</div>
+      		</div>
+      		<div class="row" id="split-section-3" style="display: none;">
+      			<div class="list-group">
+	      			<% variable = 1 %>
+	      			<% @group.unregist_users.each do |u| %>
+	      				<a class="list-group-item">
+		      				<div class="row">
+		      					<div class="col-lg-4 col-lg-offset-1">
+			      					<span><%= u.name %></span>
+			      					($&nbsp;<span id="individual-amt-per-<%= variable %>">0</span>)
+		      					</div>
+		      					<div class="col-lg-3" >
+		      						<input type="number" min="0" name="split-per[]" value="0" 
+		      						class="form-control"
+		      						onchange="splitByPerCalc(<%= @group.unregist_users.size %> + 1)"
+		      						id="split-per-<%= variable %>" />
+		      						<label>%</label>
+		      					</div>
+		      				</div>
+		      				<input type="hidden" name="unregist_user_id_per[]" value="<%= u.id %>">
+	      				</a>
+	      				<% variable = variable + 1 %>
+	      			<% end %>
+	      			<a class="list-group-item">
+		      			<div class="row">
+		      				<div class="col-lg-4 col-lg-offset-1">
+			      					<span>
+			      					<%= @user.username %></span>
+			      					($&nbsp;<span id="individual-amt-per-<%= variable %>">0
+			      					</span>)
+		      				</div>
+		      				<div class="col-lg-3">
+		      					<input type="number" min="0" name="split-per[]" value="0" class="form-control" id="split-per-<%= variable %>"
+		      					onchange="splitByPerCalc(<%= @group.unregist_users.size %> + 1)" />
+		      					<label>%</label>
+		      				</div>
+		      			</div>
+		      			<input type="hidden" name="regist_user_id_per" value="<%= @user.id %>">
+	      			</a>
+	      			<a class="list-group-item">
+	      				<div class="row">
+	      					<div class="col-lg-4 col-lg-offset-4">
+		      					<p>
+		      						<b>TOTAL</b> - <span id="total-per"><b>0</b></span>%
+		      					</p>
+		      					<br />
+		      					<p>
+		      						Left - <span id="left-per">100</span>%
+		      					</p>
+	      					</div>
+	      				</div>
+	      			</a>
+      			</div>
+      		</div>
+      		<input type="hidden" name="group_id" value="<%= @group.id %>" />
+			<button type="submit" class="btn btn-primary">Create</button>
+      	</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>

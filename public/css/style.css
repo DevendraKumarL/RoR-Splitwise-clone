@@ -1,0 +1,217 @@
+* {
+	font-family: 'Josefin Slab', serif;
+}
+
+a {
+	text-decoration: none;
+}
+
+.card {
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+	transition: 0.3s;
+	padding: 2px 16px;
+	border: 1px solid #000;
+}
+
+.card:hover {
+	box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+#signup-form, #login-form {
+	padding: 4px 32px;
+	margin-bottom: 32px;
+}
+
+.form-control:focus {
+  border-color: #000;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0), 0 0 8px rgba(0, 0, 0, 0.6);
+}
+
+.title {
+	font-size: 50px;
+}
+
+.home-img {
+	width: 600px;
+	height: 400px;
+}
+
+.home-button {
+	background-color: #222222;
+	font-style: bold;
+	font-size: 25px;
+	color: #fff;
+}
+
+.home-button:hover {
+	background-color: #222222;
+	color: #fff;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
+}
+
+.dashboard-main {
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+	transition: 0.3s;
+	padding: 2px 16px;
+	margin-right: 20px;
+}
+
+.dashboard-main-row1 {
+	background-color: #EEEEEE;
+	padding: 12px;
+}
+
+.dashboard-main-row2 {
+	padding: 12px;
+}
+
+.highlight {
+	background-color: #EEEEEE;
+}
+
+.groupnames {
+	font-size: 12px;
+}
+
+.highlight-group {
+	background-color: #5BC5A7;
+}
+
+.dollar {
+	font-size: 18px;
+	font-style: bold;
+	padding: 2px;
+}
+
+.well-custom {
+	border: 0.5px solid #000;
+	border-radius: 12px;
+	background-color: #EEEEEE;
+	padding: 8px;
+}
+
+.bill-title {
+	padding: 1px;
+	font-size: 15px;
+	margin: 1px;
+}
+
+.bill-descrption {
+	padding: 1px;
+	margin: 1px;
+}
+
+.bill-amount {
+	padding: 1px;
+	margin: 1px;
+	color: blue;
+	font-size: 25px;
+	font-style: bold;
+}
+
+.friend-name {
+	padding: 1px;
+}
+
+.friend-amount {
+	font-style: bold;
+	color: red;
+	font-size: 20px;
+	padding: 1px;
+}
+
+.billpage-descrption {
+	padding: 4px;
+	margin-bottom: 20px;
+	margin-left: 10px;
+	margin-top: 8px;
+	margin-right: 10px;
+	background-color: #EEEEEA;
+}
+
+.bill-split-method {
+	background-color: #5BC5A7;
+	border: 0.8px #eee;
+	padding: 8px;
+	margin: 20px;
+	font-style: bold;
+	color: black;
+	font-size: 25px;
+	border-radius: 2px;
+}
+
+.bill-total_amount {
+	background-color: #66bb6a;
+	border: 0.8px #eee;
+	padding: 8px;
+	margin: 20px;
+	font-style: bold;
+	color: black;
+	font-size: 25px;
+	border-radius: 2px;	
+}
+
+.bill-member{
+	padding: 1px;
+	font-size: 15px;
+	margin: 1px;
+}
+
+.bill-member-debt {
+	padding: 1px;
+	margin: 1px;
+	color: red;
+	font-size: 18px;
+	font-style: bold;	
+}
+
+.bill-member-user-paid {
+	padding: 1px;
+	margin: 1px;
+	color: green;
+	font-size: 18px;
+	font-style: bold;		
+}
+
+.bill-descrption-text {
+	padding: 1px;
+	margin-left: 10px;
+	font-style: italic;
+}
+
+.total-spent {
+	background-color: #66bb6a;
+	border: 0.8px #eee;
+	padding: 8px;
+	margin: 20px;
+	font-style: bold;
+	color: black;
+	font-size: 25px;
+	border-radius: 2px;
+}
+
+.total-owes {
+	background-color: #76ff03;
+	border: 0.8px #eee;
+	padding: 8px;
+	margin: 20px;
+	font-style: bold;
+	color: black;
+	font-size: 25px;
+	border-radius: 2px;
+}
+
+.total-owed {
+	background-color: red;
+	border: 0.8px #eee;
+	padding: 8px;
+	margin: 20px;
+	font-style: bold;
+	color: black;
+	font-size: 25px;
+	border-radius: 2px;
+}
+
+table {
+  border-spacing: 0 5px;
+}

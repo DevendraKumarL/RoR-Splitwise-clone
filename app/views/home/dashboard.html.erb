@@ -1,0 +1,125 @@
+<% if flash[:error_group] %>
+<div class="container">
+	<div class="alert alert-success">
+		<b><%= flash[:error_group] %></b>
+	</div>
+</div>
+<br />
+<% end %>
+
+<div class="container">
+	<div class="col-lg-2 list-group">
+		<ul class="nav nav-pills nav-stacked">
+		  <a href="<%= dashboard_path %>" class="list-group-item highlight-group"><span class="glyphicon glyphicon-chevron-right"></span> Dashboard</a>
+		  <a href="<%= activities_path %>" class="list-group-item"><span class="glyphicon glyphicon-chevron-right"></span> Recent activity</a>
+		  <hr size="1">
+		  <a  href="#" class="list-group-item"><span class="glyphicon glyphicon-chevron-right"></span> All expenses</a>
+		  <li class="list-group-item highlight"><span class="glyphicon glyphicon-tags">&nbsp; &nbsp;</span> Groups</li>
+		  <% @user_groups.each do |group| %>
+		  	<a href="<%= group_path(group.id) %>" class="list-group-item groupnames">&nbsp; &nbsp; &nbsp;<span class="glyphicon glyphicon-tag"></span><%= group.name %></a>
+		  <% end %>
+		</ul>
+	</div>
+	<div class="col-lg-7 dashboard-main">
+		<div class="row dashboard-main-row1">
+			<h1><%= @title %></h1>
+			<!-- <button class="btn btn-primary">Add Bill</button>
+			<button class="btn btn-default"> Settle Up</button> -->
+			<button class="btn btn-success" type="button" data-toggle="modal" data-target="#newGroupModal">New group</button>
+		</div>
+		<hr size="2">
+		<div class="row dashboard-main-row2">
+			<div class="col-lg-4">
+				<center>
+				<b>total spent</b><br /><br />
+				<span class="total-spent">$ <%= @total_user_spent %></span>
+				</center>
+			</div>
+			<div class="col-lg-4">
+				<center>
+				<b>you owe</b><br /><br />
+				<span class="total-owes">$ <%= @total_user_owes %></span>
+				</center>
+			</div>
+			<div class="col-lg-4">
+				<center>
+				<b>you are owed</b><br /><br />
+				<span class="total-owed">$ <%= @total_user_owed %></span>
+				</center>
+			</div>
+		</div>
+		<hr size="2">
+	</div>
+	<div class="col-lg-2 list-group">
+		<ul class="nav nav-pills nav-stacked">
+			<li class="list-group-item highlight">FRIENDS</li>
+			<hr size="1">
+			<% @friends.each do |name, owe_amt| %>
+				  <a class="list-group-item"><span class="glyphicon glyphicon-user"></span>
+					<span class="friend-name"><%= name %></span><br />
+					<span class="friend-amount">$ <%= owe_amt %></span>
+				  </a>
+			<% end %>
+		</ul>
+	</div>
+</div>
+
+
+<!-- New Group Modal -->
+<div id="newGroupModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Start a New Group</h4>
+      </div>
+      <div class="modal-body">
+      	<form method="post" action="<%= createGroup_path %>">
+      		<div class="form-group">
+      			<input type="text" name="group_name" class="form-control" placeholder="Group Name" required />
+      		</div>
+      		<div class="form-group">
+      			<textarea rows="3" class="form-control" name="group_description" placeholder="Group Description ...." required></textarea>
+      		</div>
+      		<hr size="2">
+      		<p>GROUP MEMBERS</p>
+			<p>
+				<span class="glyphicon glyphicon-user"></span>
+				<b><%= @user.username %></b>&nbsp;(<i><%= @user.email %></i>)
+			</p>
+			<div id="member-section">
+				<p id="add-members">
+					<div class="form-group form-inline">
+						<input type="text" name="member[]" placeholder="Member 1" class="form-control" required />
+						<input type="email" name="member_email[]" placeholder="Email" class="form-control" required/>
+					</div>
+				</p>
+				<p id="add-members">
+					<div class="form-group form-inline">
+						<input type="text" name="member[]" placeholder="Member 2" class="form-control" />
+						<input type="email" name="member_email[]" placeholder="Email" class="form-control" />
+					</div>
+				</p>
+				<p id="add-members">
+					<div class="form-group form-inline">
+						<input type="text" name="member[]" placeholder="Member 1" class="form-control" />
+						<input type="email" name="member_email[]" placeholder="Email" class="form-control" />
+					</div>
+				</p>
+			</div>
+			<p>
+				<button type="button" class="btn btn-default" id="addMemberBtn" onclick="addMemberRow()">+ Add member</button>
+			</p>
+			<hr size="2">
+			<button type="submit" class="btn btn-primary">Create</button>
+      	</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>

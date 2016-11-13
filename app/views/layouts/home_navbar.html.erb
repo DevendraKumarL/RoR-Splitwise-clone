@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title><%= @title %></title>
+	<!-- Bootstrap -->
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<script src="/js/jquery-2.2.4.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/css/style.css">
+	<script type="text/javascript" src="/js/script.js"></script>
+</head>
+<body>
+<div class="navbar navbar-inverse">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<%= link_to("Splitwise", "#", :class => "navbar-brand") %>
+		</div>
+		<div class="collapse navbar-collapse" id="myNavbar">
+			<ul class="nav navbar-nav navbar-right">
+				<% if session[:user_id].nil? %>
+					<% if @register.nil? %>
+						<li>
+							<a href="<%= signupPage_path %>">
+								<span class="glyphicon glyphicon-user"></span> Sign Up
+							</a>
+						</li>
+						<li>
+			    	    	<a href="<%= loginPage_path %>">
+				        		<span class="glyphicon glyphicon-log-in"></span> Login
+				        	</a>
+				        </li>
+					<% elsif @register %>
+						<li>
+			    	    	<a href="<%= loginPage_path %>">
+				        		<span class="glyphicon glyphicon-log-in"></span> Login
+				        	</a>
+				        </li>
+					<% else %>
+						<li>
+							<a href="<%= signupPage_path %>">
+								<span class="glyphicon glyphicon-user"></span> Sign Up
+							</a>
+						</li>
+					<% end %>
+				<% else %>
+					<li class="dropdown">
+			        	<a class="dropdown-toggle" data-toggle="dropdown"
+				         href="#">
+				         <span class="glyphicon glyphicon-user"></span>
+				         <%= session[:user_id]  %>
+				        <span class="caret"></span></a>
+				        <ul class="dropdown-menu">
+				          <li><a href="#">Profile</a></li>
+				          <li><a href="#">Settings</a></li>
+				          <li><a href="<%= logoutUser_path %>">Logout</a></li> 
+				        </ul>
+			      	</li>
+				<% end %>
+			</ul>
+		</div>
+	</div>
+</div>
+<%= yield %>
+</body>
+</html>
+<!DOCTYPE html>
+<html>
+<head>
+	<title><%= @title %></title>
+	<!-- Bootstrap -->
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<script src="/js/jquery-2.2.4.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/css/style.css">
+	<script type="text/javascript" src="/js/script.js"></script>
+</head>
+<body>
+<div class="navbar navbar-inverse">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<%= link_to("Splitwise", "#", :class => "navbar-brand") %>
+		</div>
+		<div class="collapse navbar-collapse" id="myNavbar">
+			<ul class="nav navbar-nav navbar-right">
+				<% if @register.nil? %>
+					<li>
+						<a href="<%= signupPage_path %>">
+							<span class="glyphicon glyphicon-user"></span> Sign Up
+						</a>
+					</li>
+					<li>
+		    	    	<a href="<%= loginPage_path %>">
+			        		<span class="glyphicon glyphicon-log-in"></span> Login
+			        	</a>
+			        </li>
+				<% elsif @register %>
+					<li>
+		    	    	<a href="<%= loginPage_path %>">
+			        		<span class="glyphicon glyphicon-log-in"></span> Login
+			        	</a>
+			        </li>
+				<% else %>
+					<li>
+						<a href="<%= signupPage_path %>">
+							<span class="glyphicon glyphicon-user"></span> Sign Up
+						</a>
+					</li>
+				<% end %>
+			</ul>
+		</div>
+	</div>
+</div>
+<%= yield %>
+</body>
+</html>
