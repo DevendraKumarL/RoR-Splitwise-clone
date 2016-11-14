@@ -50,6 +50,13 @@ class HomeController < ApplicationController
 			return
 		end
 
+		@check = User.find_by_phone(params[:phone])
+		if !@check.nil?
+			flash[:error_register] = "Phone is already taken try something else"
+			render('signupPage')
+			return
+		end
+
 		@user = User.new({
 				:username => params[:username],
 				:email => params[:email],
@@ -91,6 +98,7 @@ class HomeController < ApplicationController
 			render('loginPage')
 			return
 		end
+
 		session[:user_id] = authenticated_user
 		$current_user = session[:user_id]
 		flash[:notice] = "Login Successfull"
@@ -112,14 +120,14 @@ class HomeController < ApplicationController
 		end
 		@user = User.find(@user.id)
 		@user_groups = @user.groups
-		user_debts = Debt.where(:member2 => @user.id).group(:member1).sum(:owes_amount)
-		user_friends = UnregistUser.where('id', user_debts.keys)
+		user_debts = Debt.where(:member2 => @user.id).where(['member1 <> ?', @user.id]).group(:member1).sum(:owes_amount)
+		user_friends = UnregistUser.where(:id => user_debts.keys)
 		@friends = {}
 		user_friends.each do |u|
-			@friends[u.name] = user_debts[u.id]
+			@friends[u.name] = (user_debts[u.id]).round(2)
 		end
-		@total_user_spent = Debt.where(:member1 => @user.id).sum(:owes_amount)
-		@total_user_owed = Debt.where(['member1 <> ? AND member2 = ?', @user.id, @user.id]).sum(:owes_amount)
+		@total_user_spent = Debt.where(:member1 => @user.id).sum(:owes_amount).round(2)
+		@total_user_owed = Debt.where(['member1 <> ? AND member2 = ?', @user.id, @user.id]).sum(:owes_amount).round(2)
 		@total_user_owes = 0
 	end
 
@@ -139,19 +147,19 @@ class HomeController < ApplicationController
 		@group_bills.each do |bill|
 			@total_spent_in_this_group += bill.total_amount
 		end
-		member_debts = Debt.where(:member2 => @user.id, :group_id => @group.id)
+		member_debts = Debt.where(:member2 => @user.id, :group_id => @group.id).where(['member1 <> ?', @user.id])
 								.group(:member1).sum(:owes_amount)
 		
 		@group_members_debts = {}
 		@group_members.each do |u|
-			@group_members_debts[u.name] = member_debts[u.id]
+			@group_members_debts[u.name] = (member_debts[u.id])
 		end
 
 		@total_user_spent_in_this_group = Debt.where(:group_id => @group.id, :member1 => @user.id)
-											.sum(:owes_amount)
+											.sum(:owes_amount).round(2)
 
 		@total_use_owes_from_this_group = Debt.where(:group_id => @group.id, :member2 => @user.id)
-											.where(['member1 <> ?', @user.id]).sum(:owes_amount)
+											.where(['member1 <> ?', @user.id]).sum(:owes_amount).round(2)
 	end
 
 	def createGroup
@@ -405,11 +413,12 @@ class HomeController < ApplicationController
 
 		@total_bill_debt = 0
 		bill_members.each do |m|
-			@bill_members_debts[m.name] = members_debts[m.id]
+			@bill_members_debts[m.name] = (members_debts[m.id]).round(2)
 			@total_bill_debt = @total_bill_debt + members_debts[m.id]
 		end
+		@total_bill_debt = @total_bill_debt.round(2)
 		
-		@user_paid = @bill.total_amount - @total_bill_debt
+		@user_paid = (@bill.total_amount - @total_bill_debt).round(2)
 	end
 
 	def activities
@@ -421,6 +430,6 @@ class HomeController < ApplicationController
 		@user = User.find(@user.id)
 		@user_groups = @user.groups
 
-		@user_activities = @user.activities
+		@user_activities = @user.activities.order('created_at DESC')
 	end
 end

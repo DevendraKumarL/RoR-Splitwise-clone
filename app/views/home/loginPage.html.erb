@@ -1,7 +1,7 @@
-<% if !flash['error'].nil? %>
+<% if !flash[:error_login].nil? %>
 <div class="container">
 	<div class="alert alert-danger">
-		<b><%= flash[:error] %></b>
+		<b><%= flash[:error_login] %></b>
 	</div>
 </div>
 <br />
