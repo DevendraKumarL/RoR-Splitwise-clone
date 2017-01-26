@@ -1,124 +1,17 @@
 class HomeController < ApplicationController
-
+	before_action :require_user, only: [:dashboard]
 	protect_from_forgery
 
-	layout 'navbar'
-
-	$current_user = nil
+	layout "application", only: [:homeIndex, :dashboard]
 
 	def homeIndex
 		@title = "Splitwise"
 		@register = nil
-		@user = $current_user
-	end
-
-	def signupPage
-		@title = "Registration | Splitwise"
-		@register = true
-		@user = $current_user
-		if @user
-			redirect_to dashboard_path
-		end
-	end
-
-	def signupUser
-		@title = "Registration | Splitwise"
-		@register = true
-		if params[:phone].length != 10
-			flash[:error_register] = "Phone must have 10 digits"
-			render('signupPage')
-			return
-		end
-
-		if params[:password] != params[:confirm_password]
-			flash[:error_register] = "Password & Confirm Password don\'t match"
-			render('signupPage')
-			return
-		end
-
-		@check = User.find_by_username(params[:username])
-		if !@check.nil?
-			flash[:error_register] = "Username is already taken try something else"
-			render('signupPage')
-			return
-		end
-
-		@check = User.find_by_email(params[:email])
-		if !@check.nil?
-			flash[:error_register] = "Email is already taken try something else"
-			render('signupPage')
-			return
-		end
-
-		@check = User.find_by_phone(params[:phone])
-		if !@check.nil?
-			flash[:error_register] = "Phone is already taken try something else"
-			render('signupPage')
-			return
-		end
-
-		@user = User.new({
-				:username => params[:username],
-				:email => params[:email],
-				:phone => params[:phone],
-				:image => params[:image],
-				:password => params[:password]
-		})
-
-		if @user.save
-			flash[:notice] = "Welcome! Registration Successfull, Login to continue"
-			redirect_to :controller => 'home', :action => 'loginPage', :notice => "Welcome! Registration Successfull, Login to continue"
-		else
-			flash[:error_register] = "Form is invalid"
-			render('signupPage')
-			return
-		end
-	end
-
-	def loginPage
-		@title = "Login | Splitwise"
-		@register = false
-		@user = $current_user
-		if @user
-			redirect_to dashboard_path
-		end
-	end
-
-	def loginUser
-		@title = "Login | Splitwise"
-		@register = false
-
-		found_user = User.find_by_email(params[:email])
-		if !found_user.nil?
-			authenticated_user = found_user.authenticate(params[:password])
-		end
-
-		if !authenticated_user
-			flash[:error_login] = "Invalid email/password, please try again"
-			render('loginPage')
-			return
-		end
-
-		session[:user_id] = authenticated_user
-		$current_user = session[:user_id]
-		flash[:notice] = "Login Successfull"
-		redirect_to :controller => 'home', :action => 'dashboard', :notice => 'Login Successfull'
-	end
-
-	def logoutUser
-		session[:user_id] = nil
-		$current_user = nil
-		flash[:notice] = "Logout Successfull"
-		redirect_to :controller => 'home', :action => 'homeIndex', :notice => 'Logout Successfull'
 	end
 
 	def dashboard
 		@title = "Dashboard | Splitwise"
-		@user = $current_user
-		if !@user
-			redirect_to homeIndex_path
-		end
-		@user = User.find(@user.id)
+		@user = User.find(session[:user_id])
 		@user_groups = @user.groups
 		user_debts = Debt.where(:member2 => @user.id).where(['member1 <> ?', @user.id]).group(:member1).sum(:owes_amount)
 		user_friends = UnregistUser.where(:id => user_debts.keys)

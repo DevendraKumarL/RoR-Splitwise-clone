@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title><%= @title %></title>
+  <head>
+    <title><%= @title %></title>
 	<!-- Bootstrap -->
 	
 	<!-- 
@@ -18,76 +18,85 @@
 	<script type="text/javascript" src="/js/script.js"></script>
 	<!-- <link href="https://fonts.googleapis.com/css?family=Indie+Flower" rel="stylesheet"> -->
 	<link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet">
-</head>
-<body>
-<div class="navbar navbar-inverse">
-	<div class="container-fluid">
-		<div class="navbar-header">
-			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-			</button>
-			<%= link_to("Splitwise", homeIndex_path, :class => "navbar-brand") %>
-		</div>
-		<div class="collapse navbar-collapse" id="myNavbar">
-			<ul class="nav navbar-nav navbar-right">
-				<% if @user.nil? %>
-					<% if @register.nil? %>
-						<li>
-							<a href="<%= signupPage_path %>">
-								<span class="glyphicon glyphicon-user"></span> Sign Up
-							</a>
-						</li>
-						<li>
-			    	    	<a href="<%= loginPage_path %>">
-				        		<span class="glyphicon glyphicon-log-in"></span> Login
-				        	</a>
-				        </li>
-					<% elsif @register && @user.nil? %>
-						<li>
-			    	    	<a href="<%= loginPage_path %>">
-				        		<span class="glyphicon glyphicon-log-in"></span> Login
-				        	</a>
-				        </li>
-					<% elsif !@register && @user.nil?  %>
-						<li>
-							<a href="<%= signupPage_path %>">
-								<span class="glyphicon glyphicon-user"></span> Sign Up
-							</a>
-						</li>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+  	<div class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<%= link_to("Splitwise", homeIndex_path, :class => "navbar-brand") %>
+			</div>
+			<div class="collapse navbar-collapse" id="myNavbar">
+				<ul class="nav navbar-nav navbar-right">
+					<% if !current_user %>
+						<% if @register.nil? %>
+							<li>
+								<a href="<%= signupPage_path %>">
+									<span class="glyphicon glyphicon-user"></span> Sign Up
+								</a>
+							</li>
+							<li>
+				    	    	<a href="<%= login_path %>">
+					        		<span class="glyphicon glyphicon-log-in"></span> Login
+					        	</a>
+					        </li>
+						<% elsif @register && current_user.nil? %>
+							<li>
+				    	    	<a href="<%= login_path %>">
+					        		<span class="glyphicon glyphicon-log-in"></span> Login
+					        	</a>
+					        </li>
+						<% elsif !@register && current_user.nil?  %>
+							<li>
+								<a href="<%= signupPage_path %>">
+									<span class="glyphicon glyphicon-user"></span> Sign Up
+								</a>
+							</li>
+						<% end %>
 					<% else %>
-						<li class="dropdown">
-				        	<a class="dropdown-toggle" data-toggle="dropdown"
-					         href="#">
-					         <span class="glyphicon glyphicon-user"></span>
-					         <%= @user.username  %>
-					        <span class="caret"></span></a>
-					        <ul class="dropdown-menu">
-					          <li><a href="#">Profile</a></li>
-					          <li><a href="#">Settings</a></li>
-					          <li><a href="<%= logoutUser_path %>">Logout</a></li> 
-					        </ul>
-				      	</li>
+						<!-- user not logged and is on signup page -->
+						<% if @register %>
+							<li>
+				    	    	<a href="<%= login_path %>">
+					        		<span class="glyphicon glyphicon-log-in"></span> Login
+					        	</a>
+					        </li>
+				        <!-- user logged in -->
+						<% else %>
+							<li class="dropdown">
+					        	<a class="dropdown-toggle" data-toggle="dropdown"
+						         href="#">
+						         <span class="glyphicon glyphicon-user"></span>
+						         <%= current_user.username  %>
+						        <span class="caret"></span></a>
+						        <ul class="dropdown-menu">
+						          <li><a href="#">Profile</a></li>
+						          <li><a href="#">Settings</a></li>
+						          <li><%= link_to "Logout", logout_path, method: :delete %></li> 
+						        </ul>
+					      	</li>
+				      	<% end %>
 					<% end %>
-				<% else %>
-					<li class="dropdown">
-			        	<a class="dropdown-toggle" data-toggle="dropdown"
-				         href="#">
-				         <span class="glyphicon glyphicon-user"></span>
-				         <%= @user.username  %>
-				        <span class="caret"></span></a>
-				        <ul class="dropdown-menu">
-				          <li><a href="#">Profile</a></li>
-				          <li><a href="#">Settings</a></li>
-				          <li><a href="<%= logoutUser_path %>">Logout</a></li> 
-				        </ul>
-			      	</li>
-				<% end %>
-			</ul>
+				</ul>
+			</div>
 		</div>
 	</div>
-</div>
-<%= yield %>
-</body>
+	<% if flash[:notice] %>
+		<div class="container">
+			<div class="alert alert-info">
+				<b><%= flash[:notice] %></b>
+			</div>
+		</div>
+	<% end %>
+    <%= yield %>
+  </body>
 </html>
