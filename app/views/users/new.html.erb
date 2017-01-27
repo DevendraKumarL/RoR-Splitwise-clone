@@ -9,27 +9,42 @@
 <div class="container-fluid">
 	<div class="container col-lg-4 col-lg-offset-4 card">
 		<center><h1><%= @title %> </h1></center>
-		<form method="post" action="<%= signupUser_path %>" id="signup-form">
+		<%= form_for(@user, :url => signupUser_path, :html => { :id => "signup-form" }) do |f| %>
 			<div class="form-group">
-				<input type="email" name="email" placeholder="Email" id="email" class="form-control" required />
+				<%= f.email_field :email, :placeholder => "Email", :class => "form-control",
+					:required => "true", :id => "email" %>
+				<span class="error-msg" style="color: red;">
+				<%= @user.errors[:email].join(", ") if @user.errors[:email] %>
+				</span>
+			</div>
+			<div class="form-group" style="color: red;">
+				<%= f.text_field :username, :placeholder => "Username", :class => "form-control", :required => "true", :id => "username" %>
+				<span class="error-msg">
+				<%= @user.errors[:username].join(", ") if @user.errors[:username] %>
+				</span>
+			</div>
+			<div class="form-group" style="color: red;">
+				<%= f.number_field :phone, :placeholder => "Phone", :class => "form-control", :required => "true", :id => "phone" %>
+				<span class="error-msg">
+				<%= @user.errors[:phone].join(", ") if @user.errors[:phone] %>
+				</span>
+			</div>
+			<div class="form-group" style="color: red;">
+				<%= f.password_field :password, :placeholder => "Password",
+				 	:class => "form-control", :required => "true", :id => "password" %>
+			</div>
+			<div class="form-group" style="color: red;">
+				<%= f.password_field :password_confirmation, :placeholder => "Confirm Password", 
+					:class => "form-control", :required => "true", :id => "confirm_password" %>
+				<span class="error-msg">
+				<%= @user.errors[:password_confirmation].join(", ") if @user.errors[:password_confirmation] %>
+				</span>
 			</div>
 			<div class="form-group">
-				<input type="text" name="username" placeholder="Username" id="username" class="form-control" required />
+				<%= f.label "Profile Picture" %>
+				<%= f.file_field :image, :accept => "image/*" %>
 			</div>
-			<div class="form-group">
-				<input type="number" name="phone" placeholder="Phone" id="phone" class="form-control" required />
-			</div>
-			<div class="form-group">
-				<input type="password" name="password" placeholder="Password" id="password" class="form-control" required />
-			</div>
-			<div class="form-group">
-				<input type="password" name="confirm_password" placeholder="Confirm Password" id="confirm_password" class="form-control" required />
-			</div>
-			<div class="form-group">
-				<label>Profile Picture</label>
-				<input type="file" accept="image/*" name="image" />
-			</div>
-			<button type="submit" class="btn btn-primary btn-block">Sign Up</button>
-		</form>
+			<%= f.submit "Sign Up", :class => "btn btn-block btn-primary" %>
+		<% end %>
 	</div>
 </div>

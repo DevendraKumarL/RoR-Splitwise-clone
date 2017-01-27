@@ -11,54 +11,26 @@ class UsersController < ApplicationController
 	end
 
 	def create
-		if params[:phone].length != 10
-			flash[:notice] = "Phone must have 10 digits"
-			render('signupPage')
-			return
-		end
-
-		if params[:password] != params[:confirm_password]
-			flash[:notice] = "Password & Confirm Password don\'t match"
-			render('signupPage')
-			return
-		end
-
-		@check = User.find_by_username(params[:username])
-		if !@check.nil?
-			flash[:notice] = "Username is already taken try something else"
-			render('signupPage')
-			return
-		end
-
-		@check = User.find_by_email(params[:email])
-		if !@check.nil?
-			flash[:notice] = "Email is already taken try something else"
-			render('signupPage')
-			return
-		end
-
-		@check = User.find_by_phone(params[:phone])
-		if !@check.nil?
-			flash[:notice] = "Phone is already taken try something else"
-			render('signupPage')
-			return
-		end
-
-		@user = User.new({
-				:username => params[:username],
-				:email => params[:email],
-				:phone => params[:phone],
-				:image => params[:image],
-				:password => params[:password]
-		})
+		@user = User.new(user_params)
 
 		if @user.save
 			flash[:notice] = "Welcome! Registration Successfull, Login to continue"
-			redirect_to :controller => 'home', :action => 'loginPage', :notice => "Welcome! Registration Successfull, Login to continue"
+			redirect_to :controller => 'sessions', :action => 'new'
 		else
+			# this is to preserve the form fields 
+			# and other variables for the new action of this conroller
+			@user = @user
+			@title = "Registration | Splitwise"
+			@register = true
+			
 			flash[:notice] = "Form is invalid"
-			render('signupPage')
-			return
+			render :action => 'new'
 		end
 	end
+
+	private
+		def user_params
+			params.require(:user).permit(
+				:username, :email, :phone, :image, :password, :password_confirmation)
+		end
 end
