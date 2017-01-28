@@ -23,12 +23,12 @@ Rails.application.routes.draw do
 	get 'dashboard' => 'home#dashboard', :as => :dashboard
 
 	# groups routes
-	get 'user/group/:group_id' => 'home#group', :as => :group
-	post 'user/create-group' => 'home#createGroup', :as => :createGroup
+	get 'group/:group_id' => 'group#get_group', :as => :group
+	post 'create-group' => 'group#create_group', :as => :createGroup
 
 	# bills routes
-	get 'user/group/:group_id/bill/:bill_id' => 'home#bill', :as => :bill
-	post 'user/group/create-bill' => 'home#createGroupBill', :as => :createGroupBill
+	get 'group/:group_id/bill/:bill_id' => 'home#bill', :as => :bill
+	post 'group/create-bill' => 'home#createGroupBill', :as => :createGroupBill
 
 	# activity routes
 	get 'activities' => 'home#activities', :as => :activities
