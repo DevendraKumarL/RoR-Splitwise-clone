@@ -1,5 +1,6 @@
 class GroupController < ApplicationController
 	before_action :require_user, only: [:get_group]
+	protect_from_forgery
 
 	layout "application", only: [:get_group]
 

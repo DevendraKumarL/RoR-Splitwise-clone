@@ -27,11 +27,13 @@ Rails.application.routes.draw do
 	post 'create-group' => 'group#create_group', :as => :createGroup
 
 	# bills routes
-	get 'group/:group_id/bill/:bill_id' => 'home#bill', :as => :bill
+	get 'group/:group_id/bill/:bill_id' => 'bill#get_bill', :as => :bill
 	post 'group/create-bill' => 'home#createGroupBill', :as => :createGroupBill
 
 	# activity routes
-	get 'activities' => 'home#activities', :as => :activities
+	get 'activities' => 'activities#get_activities', :as => :activities
+	# get 'activities' => 'home#activities', :as => :activities
+
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
