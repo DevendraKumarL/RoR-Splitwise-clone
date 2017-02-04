@@ -24,6 +24,6 @@ class SessionsController < ApplicationController
 	def destroy
 		session[:user_id] = nil
 		flash[:notice] = "Logout Successfull"
-		redirect_to :controller => 'home', :action => 'homeIndex'
+		redirect_to :controller => 'home', :action => 'home_index'
 	end
 end

@@ -4,7 +4,7 @@ class HomeController < ApplicationController
 
 	layout "application", only: [:homeIndex, :dashboard]
 
-	def homeIndex
+	def home_index
 		@title = "Splitwise"
 		@register = nil
 	end
@@ -24,48 +24,48 @@ class HomeController < ApplicationController
 		@total_user_owes = 0
 	end
 
-	# def create_group
-	# 	@title = "Dashboard | Splitwise"
+	def create_group
+		@title = "Dashboard | Splitwise"
 
-	# 	members = params[:member]
-	# 	member_emails = params[:member_email]
+		members = params[:member]
+		member_emails = params[:member_email]
 
-	# 	if members.size != member_emails.size
-	# 		flash[:error_group] = "Member and Emails mismatch"
-	# 		render('dashboard')
-	# 	end
+		if members.size != member_emails.size
+			flash[:error_group] = "Member and Emails mismatch"
+			render('dashboard')
+		end
 
-	# 	group = Group.new
-	# 	group.name = params[:group_name]
-	# 	group.description = params[:group_description]
-	# 	group.user = current_user
+		group = Group.new
+		group.name = params[:group_name]
+		group.description = params[:group_description]
+		group.user = current_user
 
-	# 	if group.save
-	# 		activity = Activity.new
-	# 		activity.activity_details = "You added group " + group.name
-	# 		activity.user = @user
-	# 		activity.save
-	# 		for i in 0..members.size-1
-	# 			if members[i] != ''
-	# 				unregist_user = UnregistUser.new
-	# 				unregist_user.name = members[i]
-	# 				unregist_user.email = member_emails[i]
-	# 				group.unregist_users << unregist_user
-	# 				a = Activity.new
-	# 				a.activity_details = "		Member " + unregist_user.name + " added to group " + group.name
-	# 				a.user = @user
-	# 				a.save
-	# 			end
-	# 		end
-	# 		flash[:notice] = "Group created Successfull"
-	# 		redirect_to :controller => 'home', :action => 'dashboard'
-	# 	else
-	# 		flash[:notice] = "Group couldn\'t be created"
-	# 		redirect_to :controller => 'home', :action => 'dashboard'
-	# 	end
-	# end
+		if group.save
+			activity = Activity.new
+			activity.activity_details = "You added group " + group.name
+			activity.user = @user
+			activity.save
+			for i in 0..members.size-1
+				if members[i] != ''
+					unregist_user = UnregistUser.new
+					unregist_user.name = members[i]
+					unregist_user.email = member_emails[i]
+					group.unregist_users << unregist_user
+					a = Activity.new
+					a.activity_details = "		Member " + unregist_user.name + " added to group " + group.name
+					a.user = @user
+					a.save
+				end
+			end
+			flash[:notice] = "Group created Successfull"
+			redirect_to :controller => 'home', :action => 'dashboard'
+		else
+			flash[:notice] = "Group couldn\'t be created"
+			redirect_to :controller => 'home', :action => 'dashboard'
+		end
+	end
 
-	def createGroupBill
+	def create_group_bill
 		@title = "Dashboard | Splitwise"
 		@user = User.find(session[:user_id])
 
@@ -256,33 +256,4 @@ class HomeController < ApplicationController
 		end
 	end
 
-	# def bill
-	# 	@group = Group.find(params[:group_id])
-	# 	@bill = Bill.find(params[:bill_id])
-	# 	@title = @bill.name
-	# 	@user = User.find(session[:user_id])
-	# 	@user_groups = @user.groups
-	# 	bill_members = @bill.group.unregist_users
-		
-	# 	members_debts = Debt.where(:bill_id => @bill.id, :group_id => @group.id)
-	# 					.group(:member1).where(['member1 <> ?', @user.id]).sum(:owes_amount)
-	# 	@bill_members_debts = {}
-
-	# 	@total_bill_debt = 0
-	# 	bill_members.each do |m|
-	# 		@bill_members_debts[m.name] = (members_debts[m.id]).round(2)
-	# 		@total_bill_debt = @total_bill_debt + members_debts[m.id]
-	# 	end
-	# 	@total_bill_debt = @total_bill_debt.round(2)
-		
-	# 	@user_paid = (@bill.total_amount - @total_bill_debt).round(2)
-	# end
-
-	def activities
-		@title = "Activities | Splitwise"
-		@user = User.find(session[:user_id])
-		@user_groups = @user.groups
-
-		@user_activities = @user.activities.order('created_at DESC')
-	end
 end
